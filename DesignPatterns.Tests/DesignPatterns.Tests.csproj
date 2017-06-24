@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChainOfResponsibility\Tests.cs" />
+    <Compile Include="EventsAggregator\TestEvent.cs" />
+    <Compile Include="EventsAggregator\Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

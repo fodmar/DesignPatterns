@@ -44,6 +44,10 @@
     <Compile Include="ChainOfResponsibility\IChainElementsProvider.cs" />
     <Compile Include="ChainOfResponsibility\IChainOfResponsibility.cs" />
     <Compile Include="ChainOfResponsibility\IChainElement.cs" />
+    <Compile Include="EventsAggregator\EventAggregator.cs" />
+    <Compile Include="EventsAggregator\Feedback.cs" />
+    <Compile Include="EventsAggregator\IEventAggregator.cs" />
+    <Compile Include="EventsAggregator\ISubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
