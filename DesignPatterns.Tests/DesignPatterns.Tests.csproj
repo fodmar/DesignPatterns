@@ -46,6 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChainOfResponsibility\Tests.cs" />
+    <Compile Include="Command\AppendTextCommand.cs" />
+    <Compile Include="Command\ReverseCommand.cs" />
+    <Compile Include="Command\Tests.cs" />
+    <Compile Include="Command\ToUpperCommand.cs" />
     <Compile Include="EventsAggregator\TestEvent.cs" />
     <Compile Include="EventsAggregator\Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -44,6 +44,9 @@
     <Compile Include="ChainOfResponsibility\IChainElementsProvider.cs" />
     <Compile Include="ChainOfResponsibility\IChainOfResponsibility.cs" />
     <Compile Include="ChainOfResponsibility\IChainElement.cs" />
+    <Compile Include="Command\Executor.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\IExecutor.cs" />
     <Compile Include="EventsAggregator\EventAggregator.cs" />
     <Compile Include="EventsAggregator\Feedback.cs" />
     <Compile Include="EventsAggregator\IEventAggregator.cs" />
