@@ -14,19 +14,19 @@ namespace DesignPatterns.MVP
             {
                 new ProductDetails
                 {
-                    Name = "A",
-                    Category = "A",
-                    Manufacturer = "A",
-                    Description = "A",
-                    Price = 100m
+                    Name = "Plate",
+                    Category = "Kitchen",
+                    Manufacturer = "Unknown",
+                    Description = "Big plate",
+                    Price = 100.1m
                 },
                 new ProductDetails
                 {
-                    Name = "B",
-                    Category = "B",
-                    Manufacturer = "B",
-                    Description = "B",
-                    Price = 100m
+                    Name = "Flowers",
+                    Category = "Garden",
+                    Manufacturer = "Nature",
+                    Description = "Beautiful, yellow flowers",
+                    Price = 66.05m
                 },
             };
         }

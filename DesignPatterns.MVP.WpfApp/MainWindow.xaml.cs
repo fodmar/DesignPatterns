@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,33 +19,37 @@ namespace DesignPatterns.MVP.WpfApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IView
+    public partial class MainWindow : Window, IView, INotifyPropertyChanged
     {
-        private ProductDetails currentDetails;
+        public ProductDetails CurrentDetails { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            this.spProducts.ItemsSource = new ProductProvider().GetProducts();  
         }
 
         public void Show(IEnumerable<Product> products)
         {
-            this.Show();
-            this.spProducts.ItemsSource = products;
+            Product[] productsArray = products.ToArray();
 
-            DetailsRequested(null, new ProductEventArgs { Product = products.First() });
+            this.spProducts.ItemsSource = productsArray;
+
+            if (productsArray.Any())
+            {
+                DetailsRequested(null, new ProductEventArgs { Product = productsArray.First() });
+            }
+
+            this.Show();
         }
 
         public void ShowDetails(ProductDetails productDetails)
         {
-            this.tbName.Text = productDetails.Name;
-            this.tbCategory.Text = productDetails.Category;
-            this.tbManufacturer.Text = productDetails.Manufacturer;
-            this.tbPrice.Text = productDetails.Price.ToString();
-            this.tbDescription.Text = productDetails.Description;
+            this.CurrentDetails = productDetails;
 
-            this.currentDetails = productDetails;
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs("CurrentDetails"));
+            }
         }
 
         public void Inform(string message)
@@ -65,6 +70,8 @@ namespace DesignPatterns.MVP.WpfApp
 
         public event EventHandler ExitRequested;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void spProducts_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var item = (sender as ListBox).SelectedItem as Product;
@@ -77,7 +84,7 @@ namespace DesignPatterns.MVP.WpfApp
 
         private void btnOrder_Click(object sender, RoutedEventArgs e)
         {
-            OrderRequested(null, new ProductEventArgs { Product = this.currentDetails });
+            OrderRequested(null, new ProductEventArgs { Product = this.CurrentDetails });
         }
     }
 }
