@@ -21,11 +21,16 @@ namespace DesignPatterns.MVP.WpfApp
     /// </summary>
     public partial class MainWindow : Window, IView, INotifyPropertyChanged
     {
+        private bool cancelClosing;
+
         public ProductDetails CurrentDetails { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.cancelClosing = true;
+            this.PropertyChanged += (s, e) => { };
         }
 
         public void Show(IEnumerable<Product> products)
@@ -39,17 +44,16 @@ namespace DesignPatterns.MVP.WpfApp
                 DetailsRequested(null, new ProductEventArgs { Product = productsArray.First() });
             }
 
-            this.Show();
+            if (this.Visibility == Visibility.Collapsed)
+            {
+                this.Show();
+            }
         }
 
         public void ShowDetails(ProductDetails productDetails)
         {
             this.CurrentDetails = productDetails;
-
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs("CurrentDetails"));
-            }
+            this.PropertyChanged(this, new PropertyChangedEventArgs("CurrentDetails"));
         }
 
         public void Inform(string message)
@@ -62,6 +66,11 @@ namespace DesignPatterns.MVP.WpfApp
             MessageBoxResult result = MessageBox.Show(message, "Confirmation", MessageBoxButton.YesNo);
 
             return result == MessageBoxResult.Yes;
+        }
+
+        void IView.Hide()
+        {
+            this.cancelClosing = false;
         }
 
         public event EventHandler<ProductEventArgs> DetailsRequested;
@@ -85,6 +94,12 @@ namespace DesignPatterns.MVP.WpfApp
         private void btnOrder_Click(object sender, RoutedEventArgs e)
         {
             OrderRequested(null, new ProductEventArgs { Product = this.CurrentDetails });
+        }
+
+        private void mainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            this.ExitRequested(null, EventArgs.Empty);
+            e.Cancel = cancelClosing;
         }
     }
 }
