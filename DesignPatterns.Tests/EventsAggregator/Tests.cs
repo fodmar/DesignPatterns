@@ -14,7 +14,7 @@ namespace DesignPatterns.Tests.EventsAggregator
     class Tests
     {
         [Test]
-        public void StringEvent_StringSubscribersCalled()
+        public async void StringEvent_StringSubscribersCalled()
         {
             // Arrange
             string someString = "test";
@@ -24,12 +24,12 @@ namespace DesignPatterns.Tests.EventsAggregator
             var subscriber2 = MockRepository.GenerateStub<ISubscriber<string>>();
             var subscriber3 = MockRepository.GenerateStub<ISubscriber<int>>();
 
-            eventAggregator.Subscribe<string>(subscriber1);
-            eventAggregator.Subscribe<string>(subscriber2);
-            eventAggregator.Subscribe<int>(subscriber3);
+            eventAggregator.Subscribe(subscriber1);
+            eventAggregator.Subscribe(subscriber2);
+            eventAggregator.Subscribe(subscriber3);
 
             // Act
-            Feedback<string> feedback = eventAggregator.Publish<string>(someString);
+            Feedback<string> feedback = await eventAggregator.Publish(someString);
 
             // Assert
             subscriber1.AssertWasCalled(s => s.Receive(someString));
@@ -51,12 +51,12 @@ namespace DesignPatterns.Tests.EventsAggregator
             var subscriber2 = MockRepository.GenerateStub<ISubscriber<string>>();
             var subscriber3 = MockRepository.GenerateStub<ISubscriber<int>>();
 
-            eventAggregator.Subscribe<string>(subscriber1);
-            eventAggregator.Subscribe<string>(subscriber2);
-            eventAggregator.Subscribe<int>(subscriber3);
+            eventAggregator.Subscribe(subscriber1);
+            eventAggregator.Subscribe(subscriber2);
+            eventAggregator.Subscribe(subscriber3);
 
             // Act
-            Feedback<string> feedback = await eventAggregator.PublishAsync<string>(someString);
+            Feedback<string> feedback = await eventAggregator.Publish(someString);
 
             // Assert
             subscriber1.AssertWasCalled(s => s.Receive(someString));
@@ -68,32 +68,7 @@ namespace DesignPatterns.Tests.EventsAggregator
         }
 
         [Test]
-        public void TestEvent_SubscriberCanChangeEvent()
-        {
-            // Arrange
-            TestEvent testEvent = new TestEvent();
-            IEventAggregator eventAggregator = new EventAggregator();
-
-            var subscriber = MockRepository.GenerateStub<ISubscriber<TestEvent>>();
-
-            subscriber.Stub(s => s.Receive(testEvent)).Do(new Action<TestEvent>((e) => e.Passed = true));
-
-            eventAggregator.Subscribe<TestEvent>(subscriber);
-
-            // Act
-            Feedback<TestEvent> feedback = eventAggregator.Publish<TestEvent>(testEvent);
-
-            // Assert
-            subscriber.AssertWasCalled(s => s.Receive(testEvent));
-            Assert.That(feedback.Received);
-            Assert.IsNull(feedback.Exception);
-            Assert.IsTrue(testEvent.Passed);
-            Assert.IsTrue(feedback.EventObject.Passed);
-            Assert.AreSame(testEvent, feedback.EventObject);
-        }
-
-        [Test]
-        public void UnsubscribedFromEvent_NotCalled()
+        public async void UnsubscribedFromEvent_NotCalled()
         {
             // Arrange
             string someString = "test";
@@ -103,14 +78,14 @@ namespace DesignPatterns.Tests.EventsAggregator
             var subscriber2 = MockRepository.GenerateStub<ISubscriber<string>>();
             var subscriber3 = MockRepository.GenerateStub<ISubscriber<int>>();
 
-            eventAggregator.Subscribe<string>(subscriber1);
-            eventAggregator.Subscribe<string>(subscriber2);
-            eventAggregator.Subscribe<int>(subscriber3);
+            eventAggregator.Subscribe(subscriber1);
+            eventAggregator.Subscribe(subscriber2);
+            eventAggregator.Subscribe(subscriber3);
 
             // Act
-            eventAggregator.Unsubscribe<string>(subscriber2);
-            eventAggregator.Unsubscribe<int>(subscriber3);
-            Feedback<string> feedback = eventAggregator.Publish<string>(someString);
+            eventAggregator.Unsubscribe(subscriber2);
+            eventAggregator.Unsubscribe(subscriber3);
+            Feedback<string> feedback = await eventAggregator.Publish(someString);
 
             // Assert
             subscriber1.AssertWasCalled(s => s.Receive(someString));
@@ -122,7 +97,7 @@ namespace DesignPatterns.Tests.EventsAggregator
         }
 
         [Test]
-        public void UnsubscriberThrownException_ExceptionIsHandled()
+        public async void UnsubscriberThrownException_ExceptionIsHandled()
         {
             // Arrange
             string someString = "test";
@@ -132,14 +107,14 @@ namespace DesignPatterns.Tests.EventsAggregator
             var subscriber2 = MockRepository.GenerateStub<ISubscriber<string>>();
             var subscriber3 = MockRepository.GenerateStub<ISubscriber<int>>();
 
-            subscriber2.Stub(s => s.Receive(someString)).Do(new Action<string>((s) => { throw new IndexOutOfRangeException(); }));
+            subscriber2.Stub(s => s.Receive(someString)).Throw(new Exception("test"));
 
-            eventAggregator.Subscribe<string>(subscriber1);
-            eventAggregator.Subscribe<int>(subscriber3);
-            eventAggregator.Subscribe<string>(subscriber2);
+            eventAggregator.Subscribe(subscriber1);
+            eventAggregator.Subscribe(subscriber3);
+            eventAggregator.Subscribe(subscriber2);
 
             // Act
-            Feedback<string> feedback = eventAggregator.Publish<string>(someString);
+            Feedback<string> feedback = await eventAggregator.Publish(someString);
 
             // Assert
             subscriber1.AssertWasCalled(s => s.Receive(someString));
@@ -151,7 +126,7 @@ namespace DesignPatterns.Tests.EventsAggregator
         }
 
         [Test]
-        public void UnsubscriberThrownExceptionAsync_ExceptionIsHandled()
+        public async void SubscriberThrownExceptionAsync_ExceptionIsHandled()
         {
             // Arrange
             string someString = "test";
@@ -161,14 +136,14 @@ namespace DesignPatterns.Tests.EventsAggregator
             var subscriber2 = MockRepository.GenerateStub<ISubscriber<string>>();
             var subscriber3 = MockRepository.GenerateStub<ISubscriber<int>>();
 
-            subscriber2.Stub(s => s.Receive(someString)).Do(new Action<string>((s) => { throw new IndexOutOfRangeException(); }));
+            subscriber2.Stub(s => s.Receive(someString)).Throw(new Exception("test"));
 
-            eventAggregator.Subscribe<string>(subscriber1);
-            eventAggregator.Subscribe<int>(subscriber3);
-            eventAggregator.Subscribe<string>(subscriber2);
+            eventAggregator.Subscribe(subscriber1);
+            eventAggregator.Subscribe(subscriber3);
+            eventAggregator.Subscribe(subscriber2);
 
             // Act
-            Task<Feedback<string>> feedbackTask = eventAggregator.PublishAsync<string>(someString);
+            Task<Feedback<string>> feedbackTask = eventAggregator.Publish(someString);
 
             feedbackTask.ContinueWith(t =>
             {

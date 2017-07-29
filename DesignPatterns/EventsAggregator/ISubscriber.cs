@@ -8,6 +8,6 @@ namespace DesignPatterns.EventsAggregator
 {
     public interface ISubscriber<T>
     {
-        void Receive(T eventObject);
+        Task Receive(T eventObject);
     }
 }

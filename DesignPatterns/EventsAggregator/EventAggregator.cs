@@ -16,7 +16,7 @@ namespace DesignPatterns.EventsAggregator
             this.subscribers = new Dictionary<Type, ArrayList>();
         }
 
-        public Feedback<T> Publish<T>(T eventObject)
+        public async Task<Feedback<T>> Publish<T>(T eventObject)
         {
             Feedback<T> feedback = new Feedback<T>(eventObject);
             ArrayList subscribers;
@@ -32,7 +32,6 @@ namespace DesignPatterns.EventsAggregator
                         var current = subscribers[i] as ISubscriber<T>;
                         current.Receive(eventObject);
                     });
-
                 }
                 catch (AggregateException ex)
                 {
@@ -41,11 +40,6 @@ namespace DesignPatterns.EventsAggregator
 	        }
 
             return feedback;
-        }
-
-        public Task<Feedback<T>> PublishAsync<T>(T eventObject)
-        {
-            return Task.Factory.StartNew<Feedback<T>>(() => this.Publish<T>(eventObject));
         }
 
         public void Subscribe<T>(ISubscriber<T> subscriber)
